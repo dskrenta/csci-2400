@@ -1,7 +1,7 @@
 /* 
  * CS:APP Data Lab 
  * 
- * <Please put your name and userid here>
+ * David Skrenta - 108458842
  * 
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
@@ -176,7 +176,7 @@ NOTES:
  */
 int bitOr(int x, int y) {
     // x or y are true if x and y are not both false
-    // one of Demorgan's laws
+    // Demorgan's laws
     // converts 0s to 1s, compares, switches again
          
     return ~(~x&~y);
@@ -189,7 +189,7 @@ int bitOr(int x, int y) {
  */
 int evenBits(void) {
     // 0x55 in binary is 01010101
-    // shift left 25
+    // shift left 24
     // shift left 16
     // shift left 8
     // return 32 bit word with all even bits set to 1
@@ -271,7 +271,7 @@ int byteSwap(int x, int n, int m) {
     // get difference between shifted bits
     // and it to 0xff to fill remaining bits
     temp = 0xff & ((x >> n) ^ (x >> m));
-    // move bits in x based on values form temp
+    // move bits in x based on values from temp
     // xor to get bits from temp << n and temp << n into x
     // xor to only get changed bits
     x = x ^ (temp << n);
@@ -304,6 +304,7 @@ int addOK(int x, int y) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
+    // if x then y else z
     // puts x in 0 or 1 form
     // x is now either all 1s or all 0s
     x = !!x;
@@ -344,7 +345,7 @@ int isAsciiDigit(int x) {
  *   Rating: 3
  */
 int replaceByte(int x, int n, int c) {
-    // 11111111
+    // 0xff = 11111111
     int mask = 0xff;
     // shift by 3 because n between 0 and 3
     int shift = n << 3;
@@ -371,6 +372,7 @@ int reverseBits(int x) {
     // unsign x
     unsigned reverseX = x;
     
+    // 0xff = 11111111
     // create masks for each reverse
     int mask8 = 0xff | (0xff << 16);
     int mask4 = mask8 ^ (mask8 << 4);
@@ -408,6 +410,7 @@ int satAdd(int x, int y) {
     // determines upper or lower overflow
     int sign = x >> 31;
     // conditional to determine if x and y can be added, if they cannot return the overflow
+    // max posible masking overflow
     return ((sum) & ~overflowMask) | (overflowMask & ((sign & lowerOverflow) | (~sign & upperOverflow)));
 }
 /*
@@ -425,22 +428,7 @@ int satAdd(int x, int y) {
  *   Rating: 2
  */
 unsigned float_abs(unsigned uf) {
-    // mask sign bit, check if all exponent bits are set to 1
-    unsigned absRes = uf & 0x7fffffff;
-
-    // if the frac bits are some value return res
-    if ((absRes & 0x7f800000) ^ 0x7f800000) {
-        return absRes;
-    }
-    // return the absolute value
-    else {
-        if (absRes << 9) {
-            return uf;
-        }
-        else {
-            return absRes;
-        }
-    }
+    return 2;
 }
 /* 
  * float_f2i - Return bit-level equivalent of expression (int) f
@@ -455,48 +443,7 @@ unsigned float_abs(unsigned uf) {
  *   Rating: 4
  */
 int float_f2i(unsigned uf) {
-    // get components of fraction
-	unsigned sign = uf >> 31;
-	unsigned exp = (uf >> 23) & 0xFF;
-	unsigned frac =(uf & 0x7FFFFF);
-	unsigned bias = 0x7F;
-	unsigned res = frac;
-  
-    // special cases: NaN and infinity
-    if (exp == 0xFF) {
-        return 0x80000000u;
-    }
-  
-    // denormalized case and normalized exp less than bias cases
-    if (exp < bias) {
-        return 0x0;
-    }
-  
-    // normalized cases
-    exp -= bias;
-  
-    // overflow case
-    if (exp >= 31) {
-        return 0x80000000u;
-    }
-  
-    // get integer result after shift corresponding bits
-    if (exp > 22) {
-        res = frac << (exp - 23);
-    }
-    else { 
-        res = frac >> (23 - exp);
-    }
-
-    // add 1 << exp for normalized case
-    res += 1 << exp;
-  
-    // if the sign is 1 change the sign
-    if (sign) {
-        res = -res;
-    }
-  
-    return res;
+    return 2;
 }
 /* 
  * float_half - Return bit-level equivalent of expression 0.5*f for
@@ -510,30 +457,5 @@ int float_f2i(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_half(unsigned uf) {
-    // mask important components
-    unsigned fraction = uf & 0x7fffff;
-    unsigned exponent = uf & 0x7f800000;
-    unsigned sign = uf & 0x80000000;
-    unsigned rounder = 0;
-
-    // return argument when NaN or infinity
-    if (!((uf & 0x7f800000) ^ 0x7f800000)) {
-        return uf;
-    }
-
-    // if exponent is greather than 1, substract 1 and divide uf by 2
-    if (exponent > 0x800000) {
-        return sign + (exponent - 0x800000) + fraction;
-    }
-    // is exponent is less or equal to 1, shift fraction to right by 1 and divide uf by 2
-    // rounder value for case where fraction needs to be rounded to be even occurs when 2 lsb are both set to 1
-    else {
-        if ((fraction & 0x3) ^ 0x3) {
-            rounder = 0;
-        }
-        else {
-            rounder = 1;
-        }
-        return sign + ((exponent + fraction) >> 1) + rounder;
-    }
+   return 2;
 }
