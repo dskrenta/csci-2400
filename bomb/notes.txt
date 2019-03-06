@@ -1,0 +1,4 @@
+phase_4
+- %d $d input
+- output of func4 should be 352
+- f(x, y) = f(x-1) + f(y-2)
